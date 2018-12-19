@@ -1,9 +1,12 @@
 #!/bin/sh
-source ../header.sh
+
 #plugin_version=1.4.15
 plugin_version=2.2.1
 nrpe_version=3.1.0
-
+root=$PWD
+download=~/Downloads
+prefix=/usr/local/cellar
+sysctl_dir=/usr/lib/systemd/system/
 
 dependencies() {
 	yum install perl-devel perl-CPAN -y
@@ -60,22 +63,22 @@ config() {
 	cp $root/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
 	cp $root/check_mem.pl /usr/local/nagios/libexec/check_mem.pl
 	chmod 755 /usr/local/nagios/libexec/check_mem.pl
-	kill -HUP `ps -ef|grep nrpe|awk 'NR==1{print $2}'`
-	/usr/local/nagios/libexec/check_nrpe -H localhost -c check_mem
-	/usr/local/nagios/libexec/check_nrpe -H localhost -c check_disk
-	#cp $root/htpasswd.users /usr/local/nagios/etc/htpasswd.users
-	# echo -e "nrpe\t5666/tcp\t#nrpe" >> /etc/services
-	# /etc/init.d/xinetd restart
-	# chkconfig --level 35 xinetd on
-
-	# sed -i s/"only_from.*"/"only_from = $moniter_server 127.0.0.1"/g /etc/xinetd.d/nrpe
-	# echo "+++++++++++++++++++++++++++++++++++++++++++++++++"
-	# echo "/usr/local/nagios/etc/nrpe.cfg your's command"
+	
 }
 
 reload() {
-	/etc/init.d/xinetd restart
+	kill -HUP `ps -ef|grep nrpe|awk 'NR==1{print $2}'`
+	/usr/local/nagios/libexec/check_nrpe -H localhost -c check_mem
+	/usr/local/nagios/libexec/check_nrpe -H localhost -c check_disk
+}
+
+main() {
+	dependencies
+	download
+	usergroup
+	install
+	config
 }
 
 
-main $1
+main
