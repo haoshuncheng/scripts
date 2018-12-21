@@ -1,16 +1,12 @@
 #!/bin/sh
-
-#plugin_version=1.4.15
 plugin_version=2.2.1
 nrpe_version=3.1.0
 root=$PWD
 download=~/Downloads
 prefix=/usr/local/cellar
 sysctl_dir=/usr/lib/systemd/system/
-
 dependencies() {
 	yum install perl-devel perl-CPAN -y
-	
 }
 
 download() {
@@ -21,7 +17,6 @@ download() {
 		#wget http://sourceforge.net/projects/nagiosplug/files/nagiosplug/$plugin_version/$plugin_tgz
 		tar zxvf $plugin_tgz 
 	fi
-
   nrpe_tgz=nrpe-$nrpe_version.tar.gz
 	if [ ! -f $download/$nrpe_tgz ];
 	then
