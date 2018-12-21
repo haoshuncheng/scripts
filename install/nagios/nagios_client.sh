@@ -11,37 +11,37 @@ dependencies() {
 
 download() {
   plugin_tgz=nagios-plugins-$plugin_version.tar.gz
-	if [ ! -f $download/$plugin_tgz ];
-	then
-		wget https://www.nagios-plugins.org/download/$plugin_tgz
-		#wget http://sourceforge.net/projects/nagiosplug/files/nagiosplug/$plugin_version/$plugin_tgz
-		tar zxvf $plugin_tgz 
-	fi
+        if [ ! -f $download/$plugin_tgz ];
+        then
+                wget https://www.nagios-plugins.org/download/$plugin_tgz
+                #wget http://sourceforge.net/projects/nagiosplug/files/nagiosplug/$plugin_version/$plugin_tgz
+                tar zxvf $plugin_tgz 
+        fi
 
   nrpe_tgz=nrpe-$nrpe_version.tar.gz
     if [ ! -f $download/$nrpe_tgz ];
-	then
-	#wget http://nchc.dl.sourceforge.net/project/nagios/nrpe-2.x/nrpe-$nrpe_version/$nrpe_tgz
-		wget https://sourceforge.net/projects/nagios/files/nrpe-3.x/$nrpe_tgz
-		tar zxvf $nrpe_tgz
-	fi
+        then
+        #wget http://nchc.dl.sourceforge.net/project/nagios/nrpe-2.x/nrpe-$nrpe_version/$nrpe_tgz
+                wget https://sourceforge.net/projects/nagios/files/nrpe-3.x/$nrpe_tgz
+                tar zxvf $nrpe_tgz
+        fi
 }
 
 install() {
         #plugin
-	cd $download/nagios-plugins-$plugin_version
+        cd $download/nagios-plugins-$plugin_version
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios --enable-perl-modules
-	make;make install
+        make;make install
   chown nagios.nagios /usr/local/nagios
-	chown -R nagios.nagios /usr/local/nagios/libexec
+        chown -R nagios.nagios /usr/local/nagios/libexec
 
-	#nrpe
-	cd $download/nrpe-$nrpe_version
-	./configure
-	make all
-	make install-plugin
-  	make install-daemon
-	make install-daemon-config
+        #nrpe
+        cd $download/nrpe-$nrpe_version
+        ./configure
+        make all
+        make install-plugin
+        make install-daemon
+        make install-daemon-config
 }
 
 usergroup() {
@@ -51,19 +51,19 @@ usergroup() {
 
 config() {
         mkdir /usr/local/nagios/etc/
-		cp $download/nrpe-$nrpe_version/sample-config/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
-		/usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg 
-		echo "/usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg" >> /etc/rc.local
-		/usr/local/nagios/libexec/check_nrpe -H localhost
-		cp $root/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
-		cp $root/check_mem.pl /usr/local/nagios/libexec/check_mem.pl
-		chmod 755 /usr/local/nagios/libexec/check_mem.pl
+                cp $download/nrpe-$nrpe_version/sample-config/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
+                /usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg 
+                echo "/usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg" >> /etc/rc.local
+                /usr/local/nagios/libexec/check_nrpe -H localhost
+                cp $root/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
+                cp $root/check_mem.pl /usr/local/nagios/libexec/check_mem.pl
+                chmod 755 /usr/local/nagios/libexec/check_mem.pl
 }
 
 reload() {
         kill -HUP `ps -ef|grep nrpe|awk 'NR==1{print $2}'`
-		/usr/local/nagios/libexec/check_nrpe -H localhost -c check_mem
-		/usr/local/nagios/libexec/check_nrpe -H localhost -c check_disk
+                /usr/local/nagios/libexec/check_nrpe -H localhost -c check_mem
+                /usr/local/nagios/libexec/check_nrpe -H localhost -c check_disk
 }
 
 
