@@ -7,6 +7,8 @@ nrpe_version=3.1.0
 
 dependencies() {
         yum install perl-devel perl-CPAN -y
+        yum install openssl-devel 
+        yum gcc
 }
 
 download() {
