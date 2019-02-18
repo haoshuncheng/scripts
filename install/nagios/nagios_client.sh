@@ -53,11 +53,11 @@ usergroup() {
 
 config() {
         mkdir /usr/local/nagios/etc/
-                cp $download/nrpe-$nrpe_version/sample-config/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
+                cp $root/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
                 /usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg 
                 echo "/usr/local/nagios/bin/nrpe -d -c /usr/local/nagios/etc/nrpe.cfg" >> /etc/rc.local
+                chmod +x /etc/rc.d/rc.local 
                 /usr/local/nagios/libexec/check_nrpe -H localhost
-                cp $root/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
                 cp $root/check_mem.pl /usr/local/nagios/libexec/check_mem.pl
                 chmod 755 /usr/local/nagios/libexec/check_mem.pl
 }
